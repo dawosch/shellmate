@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
 import { template } from '../template/template';
 import { ErrorMessages, showError } from '../utils/error.utils';
-
-const CONFIG_LOCATION_OPTIONS = [{ label: 'Within .vscode Folder' }, { label: 'Custom Location' }];
+import { getVscodeConfigUri, getWorkspaceConfigUri, isMultiRootProject, openConfig } from '../utils/config.utils';
 
 async function handleVsCodeFolderConfig() {
   const rootFolder = vscode.workspace.workspaceFolders?.[0];
@@ -16,29 +15,33 @@ async function handleVsCodeFolderConfig() {
   await vscode.window.showTextDocument(document);
 }
 
-async function handleCustomLocationConfig() {
+async function handleCustomLocationConfig(path: string) {
   const workspaceFileUri = vscode.workspace.workspaceFile;
   if (!workspaceFileUri) return showError(ErrorMessages.NO_WORKSPACE_FILE);
 
-  await vscode.workspace.getConfiguration('shellmate', workspaceFileUri).update('config.path', '');
-  const document = await vscode.workspace.openTextDocument(workspaceFileUri);
+  const configFileUri = vscode.Uri.file(path + '/shellmate.json');
+  await vscode.workspace.getConfiguration('shellmate', workspaceFileUri).update('config.path', configFileUri.fsPath);
+  await vscode.workspace.fs.writeFile(configFileUri, new TextEncoder().encode(JSON.stringify(template, null, 2)));
+  const document = await vscode.workspace.openTextDocument(configFileUri);
   await vscode.window.showTextDocument(document);
 }
 
 export async function init() {
-  const isMultiRootProject = (vscode.workspace.workspaceFolders?.length ?? 0) > 1;
+  // Try to read existing config
+  const configUri = isMultiRootProject ? getWorkspaceConfigUri() : await getVscodeConfigUri();
+  if (configUri) return await openConfig(configUri);
 
-  const configLocationPicker = vscode.window.createQuickPick();
-  configLocationPicker.items = CONFIG_LOCATION_OPTIONS;
-  configLocationPicker.onDidChangeSelection(async (option) => {
-    if (option[0].label === CONFIG_LOCATION_OPTIONS[0].label) {
-      await handleVsCodeFolderConfig();
-    } else {
-      await handleCustomLocationConfig();
-    }
-
-    configLocationPicker.dispose();
-  });
-  configLocationPicker.onDidHide(() => configLocationPicker.dispose());
-  configLocationPicker.show();
+  // Config doesn't exists, so create it
+  if (!isMultiRootProject) {
+    await handleVsCodeFolderConfig();
+  } else if (isMultiRootProject) {
+    const inputStep = vscode.window.createInputBox();
+    inputStep.ignoreFocusOut = true;
+    inputStep.prompt = 'Enter the path where you want to create the configuration file';
+    inputStep.onDidAccept(async () => {
+      await handleCustomLocationConfig(inputStep.value);
+      inputStep.dispose();
+    });
+    inputStep.show();
+  }
 }

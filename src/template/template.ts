@@ -10,10 +10,12 @@ export type Terminal = {
 };
 
 export type Template = {
+  autostart?: boolean;
   terminals: (Terminal | Terminal[])[];
 };
 
 export const template: Template = {
+  autostart: false,
   terminals: [
     {
       name: '',
