@@ -4,23 +4,19 @@ import type { Template } from '../template/template';
 
 export const isMultiRootProject: boolean = (vscode.workspace.workspaceFolders?.length ?? 0) > 1;
 
-export async function readConfig(): Promise<Template | void> {
-  // Try to read existing config
+export async function readConfig(): Promise<Template | undefined> {
   const configUri = isMultiRootProject ? getWorkspaceConfigUri() : await getVscodeConfigUri();
-  if (!configUri) return showError(ErrorMessages.NO_CONFIG);
-
   try {
-    const configFile = await vscode.workspace.fs.readFile(configUri);
+    const configFile = await vscode.workspace.fs.readFile(configUri!);
     const config: Template = JSON.parse(new TextDecoder().decode(configFile));
     return config;
   } catch {
-    // return showError(ErrorMessages.NO_CONFIG);
     return undefined;
   }
 }
 
 export async function saveConfig(config: Template) {
-  const configUri = await getVscodeConfigUri();
+  const configUri = isMultiRootProject ? getWorkspaceConfigUri() : await getVscodeConfigUri();
   if (!configUri) return showError(ErrorMessages.NO_CONFIG);
   await vscode.workspace.fs.writeFile(configUri, new TextEncoder().encode(JSON.stringify(config, null, 2)));
 }

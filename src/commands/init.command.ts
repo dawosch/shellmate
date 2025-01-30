@@ -29,7 +29,9 @@ async function handleCustomLocationConfig(path: string) {
 export async function init() {
   // Try to read existing config
   const configUri = isMultiRootProject ? getWorkspaceConfigUri() : await getVscodeConfigUri();
-  if (configUri) return await openConfig(configUri);
+  try {
+    if (configUri) return await openConfig(configUri);
+  } catch {}
 
   // Config doesn't exists, so create it
   if (!isMultiRootProject) {

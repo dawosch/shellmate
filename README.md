@@ -99,6 +99,11 @@ Fell free to [create an issue](https://github.com/dawosch/shellmate) when you fi
 
 ## Release Notes
 
+### 0.0.5
+
+- Error message on startup fixed #2
+- Enable and disable autostart fixed 
+
 ### 0.0.4
 
 - Error message on startup fixed
