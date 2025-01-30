@@ -14,7 +14,8 @@ export async function readConfig(): Promise<Template | void> {
     const config: Template = JSON.parse(new TextDecoder().decode(configFile));
     return config;
   } catch {
-    return showError(ErrorMessages.NO_CONFIG);
+    // return showError(ErrorMessages.NO_CONFIG);
+    return undefined;
   }
 }
 
