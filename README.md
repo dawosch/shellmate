@@ -99,6 +99,10 @@ Fell free to [create an issue](https://github.com/dawosch/shellmate) when you fi
 
 ## Release Notes
 
+### 0.0.6
+
+- Custom config location is now also possible named workspaces with single folder
+
 ### 0.0.5
 
 - Error message on startup fixed #2

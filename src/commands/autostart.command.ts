@@ -1,5 +1,4 @@
-import * as vscode from 'vscode';
-import { getVscodeConfigUri, isMultiRootProject, readConfig, saveConfig } from '../utils/config.utils';
+import { readConfig, saveConfig } from '../utils/config.utils';
 import { ErrorMessages, showError } from '../utils/error.utils';
 
 export async function enableAutostart() {

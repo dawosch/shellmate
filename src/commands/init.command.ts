@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { template } from '../template/template';
 import { ErrorMessages, showError } from '../utils/error.utils';
-import { getVscodeConfigUri, getWorkspaceConfigUri, isMultiRootProject, openConfig } from '../utils/config.utils';
+import { getVscodeConfigUri, getWorkspaceConfigUri, isWorkspace, openConfig } from '../utils/config.utils';
 
 async function handleVsCodeFolderConfig() {
   const rootFolder = vscode.workspace.workspaceFolders?.[0];
@@ -27,16 +27,17 @@ async function handleCustomLocationConfig(path: string) {
 }
 
 export async function init() {
+  console.log('isMulti', vscode.workspace);
   // Try to read existing config
-  const configUri = isMultiRootProject ? getWorkspaceConfigUri() : await getVscodeConfigUri();
+  const configUri = isWorkspace ? getWorkspaceConfigUri() : await getVscodeConfigUri();
   try {
     if (configUri) return await openConfig(configUri);
   } catch {}
 
   // Config doesn't exists, so create it
-  if (!isMultiRootProject) {
+  if (!isWorkspace) {
     await handleVsCodeFolderConfig();
-  } else if (isMultiRootProject) {
+  } else if (isWorkspace) {
     const inputStep = vscode.window.createInputBox();
     inputStep.ignoreFocusOut = true;
     inputStep.prompt = 'Enter the path where you want to create the configuration file';

@@ -2,10 +2,10 @@ import * as vscode from 'vscode';
 import { ErrorMessages, showError } from '../utils/error.utils';
 import type { Template } from '../template/template';
 
-export const isMultiRootProject: boolean = (vscode.workspace.workspaceFolders?.length ?? 0) > 1;
+export const isWorkspace: boolean = !!vscode.workspace.workspaceFile;
 
 export async function readConfig(): Promise<Template | undefined> {
-  const configUri = isMultiRootProject ? getWorkspaceConfigUri() : await getVscodeConfigUri();
+  const configUri = isWorkspace ? getWorkspaceConfigUri() : await getVscodeConfigUri();
   try {
     const configFile = await vscode.workspace.fs.readFile(configUri!);
     const config: Template = JSON.parse(new TextDecoder().decode(configFile));
@@ -16,7 +16,7 @@ export async function readConfig(): Promise<Template | undefined> {
 }
 
 export async function saveConfig(config: Template) {
-  const configUri = isMultiRootProject ? getWorkspaceConfigUri() : await getVscodeConfigUri();
+  const configUri = isWorkspace ? getWorkspaceConfigUri() : await getVscodeConfigUri();
   if (!configUri) return showError(ErrorMessages.NO_CONFIG);
   await vscode.workspace.fs.writeFile(configUri, new TextEncoder().encode(JSON.stringify(config, null, 2)));
 }
