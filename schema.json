@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ShellMate",
+  "description": "Definition for a terminal configuration.",
+  "type": "object",
+  "properties": {
+    "autostart": {
+      "type": ["boolean", "null"]
+    },
+    "terminals": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/terminal" }
+    }
+  },
+  "$defs": {
+      "terminal": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": ["string", "null"]
+          },
+          "icon": {
+            "type": ["string", "null"]
+          },
+          "shellPath": {
+            "type": ["string", "null"]
+          },
+          "shellArgs": {
+            "type": ["array", "null"],
+            "items": {
+              "type": "string"
+            }
+          },
+          "command": {
+            "type": ["string", "null"]
+          },
+          "cwd": {
+            "type": ["string", "null"]
+          },
+          "env": {
+            "type": "object"
+          },
+          "message": {
+            "type": ["string", "null"]
+          }
+        }
+      }
+    }
+}

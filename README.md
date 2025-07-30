@@ -99,6 +99,11 @@ Fell free to [create an issue](https://github.com/dawosch/shellmate) when you fi
 
 ## Release Notes
 
+### 0.0.7
+
+- JSON schema added
+- Reload command added
+
 ### 0.0.6
 
 - Custom config location is now also possible named workspaces with single folder

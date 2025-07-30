@@ -2,7 +2,7 @@
   "name": "shellmate",
   "displayName": "ShellMate",
   "description": "ShellMate is an extension for managing your terminals",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "repository": {
     "url": "https://github.com/dawosch/shellmate"
   },
@@ -35,6 +35,10 @@
       {
         "command": "shellmate.activate",
         "title": "ShellMate: Activate"
+      },
+      {
+        "command": "shellmate.activate",
+        "title": "ShellMate: Reload"
       }
     ],
     "configuration": {

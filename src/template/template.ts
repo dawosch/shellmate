@@ -1,6 +1,6 @@
 export type Terminal = {
   name?: string;
-  icon: string;
+  icon?: string;
   shellPath?: string;
   shellArgs?: string[];
   command?: string;
@@ -10,11 +10,13 @@ export type Terminal = {
 };
 
 export type Template = {
+  $schema: string;
   autostart?: boolean;
   terminals: (Terminal | Terminal[])[];
 };
 
 export const template: Template = {
+  $schema: 'https://raw.githubusercontent.com/dawosch/shellmate/refs/heads/main/schema.json',
   autostart: false,
   terminals: [
     {
